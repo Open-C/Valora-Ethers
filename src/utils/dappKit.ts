@@ -3,6 +3,10 @@
 import { stringify } from 'querystring';
 import { parse } from 'url';
 import Linking from './linking';
+import { CeloProvider } from '@celo-tools/celo-ethers-wrapper';
+import BigNumber from 'bignumber.js';
+import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { Transaction } from 'ethers';
 
 export const DAPPKIT_BASE_HOST = 'celo://wallet/dappkit';
 export enum DappKitRequestTypes {
@@ -306,24 +310,33 @@ export function parseDappKitRequestDeeplink(url: string): DappKitRequest {
   }
 }
 
+export function hexToNumber(hex?: string): number | undefined {
+  if (hex) {
+    return new BigNumber(hex).toNumber();
+  }
+  return undefined;
+}
+
 export function requestAccountAddress(meta: DappKitRequestMeta): void {
   const deepLink = serializeDappKitRequestDeeplink(AccountAuthRequest(meta));
   Linking.openURL(deepLink);
 }
 
 export async function requestTxSig(
-  kit: ContractKit,
-  txParams: CeloTx[],
+  provider: CeloProvider,
+  txParams: Transaction[],
   meta: DappKitRequestMeta
 ): Promise<void> {
-  const baseNonce = await kit.connection.nonce(txParams[0]?.from as string);
-  const txs = txParams.map((txParam: CeloTx, index: number) => {
-    const value = txParam.value === undefined ? '0' : txParam.value;
+  const baseNonce = await getBaseNonce(provider, txParams[0]?.from as string);
+  const txs = txParams.map((txParam: Transaction, index: number) => {
+    const value = txParam.value || '0';
     return ({
       txData: txParam.data,
-      estimatedGas: txParam.gas ?? 150000,
+      estimatedGas: txParam.gasPrice ?? 150000,
+      // @ts-ignore
       nonce: baseNonce + index,
       feeCurrencyAddress: undefined,
+      // @ts-ignore
       value,
       ...txParam,
     } as unknown) as TxToSignParam;
@@ -332,3 +345,14 @@ export async function requestTxSig(
   const request = SignTxRequest(txs, meta);
   Linking.openURL(serializeDappKitRequestDeeplink(request));
 }
+
+const getBaseNonce = async (
+  provider: CeloProvider,
+  address: string
+): Promise<number | undefined> => {
+  const resp = await provider.send('eth_getTransactionCount', [
+    address,
+    'pending',
+  ]);
+  return hexToNumber(resp.result);
+};
