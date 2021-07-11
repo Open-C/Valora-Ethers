@@ -1,7 +1,6 @@
-import { utils, Transaction, BigNumber } from 'ethers';
+import { Transaction, BigNumber } from 'ethers';
 import { ConnectionInfo } from '@ethersproject/web';
 import { Network } from '@ethersproject/networks';
-import { CHAIN_INFO, ChainId } from '@ubeswap/sdk';
 import {
   DappKitRequestTypes,
   DappKitResponseStatus,
