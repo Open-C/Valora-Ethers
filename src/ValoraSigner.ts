@@ -1,5 +1,4 @@
 import { AbstractProvider } from './AbstractProvider';
-import { ValoraProvider } from './ValoraProvider';
 import { IValoraAccount, requestValoraAuth } from './utils/valoraUtils';
 import { providers } from 'ethers';
 import { ChainId } from '@ubeswap/sdk';

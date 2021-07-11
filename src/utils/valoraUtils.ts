@@ -5,12 +5,10 @@ import {
   DappKitResponseStatus,
   parseDappkitResponseDeeplink,
   SignTxResponseSuccess,
-  TxToSignParam,
   requestAccountAddress,
   requestTxSig,
 } from './dappKit';
 import { identity } from 'lodash';
-import { CeloProvider } from '@celo-tools/celo-ethers-wrapper';
 import { providers, Transaction } from 'ethers';
 
 // Code inspiration taken from Ubeswap Valora connector

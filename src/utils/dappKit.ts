@@ -3,9 +3,7 @@
 import { stringify } from 'querystring';
 import { parse } from 'url';
 import Linking from './linking';
-import { CeloProvider } from '@celo-tools/celo-ethers-wrapper';
 import BigNumber from 'bignumber.js';
-import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { Transaction, providers } from 'ethers';
 
 export const DAPPKIT_BASE_HOST = 'celo://wallet/dappkit';
@@ -115,6 +113,7 @@ export function produceResponseDeeplink(
       if (response.status === DappKitResponseStatus.SUCCESS) {
         params.rawTxs = response.rawTxs;
       }
+      break;
     default:
       break;
   }
