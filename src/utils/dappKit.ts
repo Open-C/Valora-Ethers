@@ -6,7 +6,7 @@ import Linking from './linking';
 import { CeloProvider } from '@celo-tools/celo-ethers-wrapper';
 import BigNumber from 'bignumber.js';
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { Transaction } from 'ethers';
+import { Transaction, providers } from 'ethers';
 
 export const DAPPKIT_BASE_HOST = 'celo://wallet/dappkit';
 export enum DappKitRequestTypes {
@@ -323,7 +323,7 @@ export function requestAccountAddress(meta: DappKitRequestMeta): void {
 }
 
 export async function requestTxSig(
-  provider: CeloProvider,
+  provider: providers.JsonRpcProvider,
   txParams: Transaction[],
   meta: DappKitRequestMeta
 ): Promise<void> {
@@ -331,6 +331,7 @@ export async function requestTxSig(
   const txs = txParams.map((txParam: Transaction, index: number) => {
     const value = txParam.value || '0';
     return ({
+      ...txParam,
       txData: txParam.data,
       estimatedGas: txParam.gasPrice ?? 150000,
       // @ts-ignore
@@ -338,7 +339,6 @@ export async function requestTxSig(
       feeCurrencyAddress: undefined,
       // @ts-ignore
       value,
-      ...txParam,
     } as unknown) as TxToSignParam;
   });
 
@@ -346,8 +346,8 @@ export async function requestTxSig(
   Linking.openURL(serializeDappKitRequestDeeplink(request));
 }
 
-const getBaseNonce = async (
-  provider: CeloProvider,
+export const getBaseNonce = async (
+  provider: providers.JsonRpcProvider,
   address: string
 ): Promise<number | undefined> => {
   const resp = await provider.send('eth_getTransactionCount', [
@@ -356,3 +356,5 @@ const getBaseNonce = async (
   ]);
   return hexToNumber(resp.result);
 };
+
+export default {};
