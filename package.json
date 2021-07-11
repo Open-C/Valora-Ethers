@@ -32,7 +32,7 @@
     "trailingComma": "es5"
   },
   "name": "valora-ethers",
-  "author": "Dylan Mooers",
+  "author": "open-celo",
   "module": "dist/valora-ethers.esm.js",
   "size-limit": [
     {
