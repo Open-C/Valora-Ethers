@@ -1,6 +1,11 @@
-export const sum = (a: number, b: number) => {
-  if ('development' === process.env.NODE_ENV) {
-    console.log('boop');
-  }
-  return a + b;
+import { ValoraProvider } from './ValoraProvider';
+import { ValoraSigner } from './ValoraSigner';
+import valoraUtils from './utils/valoraUtils';
+
+export { ValoraProvider, ValoraSigner, valoraUtils };
+
+export default {
+  ValoraProvider,
+  ValoraSigner,
+  valoraUtils,
 };
